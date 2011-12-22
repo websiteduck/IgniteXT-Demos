@@ -1,5 +1,3 @@
-<h1>User Manager - <?=$content_title?></h1>
-
 <a href="<?=BASEURL?>user_manager/users/list">List Users</a> : 
 <a href="<?=BASEURL?>user_manager/users/create">Create User</a>
 

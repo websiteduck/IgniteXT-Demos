@@ -12,7 +12,7 @@ class users extends \System\Controller
 	{
 		$data['user_count'] = DB::field("SELECT count(*) FROM users");
 		$data['users'] = DB::rows("SELECT id, username FROM users LIMIT 500");
-		\System\Display::template('List Users', 'user_manager/users.list', $data);
+		\System\Display::template('List Users - User Manager', 'user_manager/users.list', $data);
 	}
 	
 	function create()
@@ -23,7 +23,7 @@ class users extends \System\Controller
 			$_SESSION['success_messages'][] = 'User [' . $id . '] ' . $_POST['username'] . ' created.';
 			header('location:'.BASEURL.'user_manager/users/list'); die();
 		}
-		\System\Display::template('Create User', 'user_manager/users.create', $data);
+		\System\Display::template('Create User - User Manager', 'user_manager/users.create', $data);
 	}
 	
 	function delete()

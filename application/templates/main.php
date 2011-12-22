@@ -16,7 +16,8 @@
 			</ul>
 		</div>
 		<div id="content">
-		<? \System\Display::view($content_view, $data); ?>
+			<h1 id="content_title"><?=$content_title?></h1>
+			<? \System\Display::view($content_view, $data); ?>
 		</div>
 		<div id="footer">
 			<p style="text-align: center;">&copy; 2011 Website Duck LLC</p>
