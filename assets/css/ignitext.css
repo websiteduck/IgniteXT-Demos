@@ -1,5 +1,16 @@
 html, body { padding: 0; margin: 0; }
-body { padding: 20px; }
-#header { padding: 0 30px; }
+
+#header { background-color: #EEE; padding: 5px; }
 #header img { vertical-align: middle; }
-#footer { padding-top: 100px; }
+#header_menu { background-color: #DDD; border: 1px solid #AAA; height: 30px;}
+#header_menu ul { list-style-type: none; padding: 0; margin: 0; }
+#header_menu ul li { float: left; display: block; padding: 0; margin: 0; }
+#header_menu ul li a { 
+	display: block; line-height: 30px; padding: 0 10px; 
+	text-decoration: none; color: #333;
+}
+#header_menu ul li a:hover { text-shadow: 0 0 5px #FFF, 0 0 5px #FFF, 0 0 5px #FFF, 0 0 5px #FFF; }
+
+#content { padding: 20px; }
+
+#footer { padding: 20px; margin-top: 100px; background-color: #DDD; border: 1px solid #AAA; }
