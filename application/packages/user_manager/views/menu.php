@@ -1,10 +1,24 @@
-<a href="<?=BASEURL?>user_manager/users/list">List Users</a> : 
-<a href="<?=BASEURL?>user_manager/users/create">Create User</a>
+<style type="text/css">
+	#content button { padding: 5px; }
+</style>
+
+<hr />
+
+<button onclick="window.location = '<?=BASEURL?>user_manager/users/list'">
+	<img src="<?=BASEURL?>assets/images/icons/users.png" class="icon" alt="" />
+	List Users
+</button>
+<button onclick="window.location = '<?=BASEURL?>user_manager/users/create'">
+	<img src="<?=BASEURL?>assets/images/icons/user--plus.png" class="icon" alt="" />
+	Create User
+</button>
+
+<hr />
 
 <? if (isset($_SESSION['success_messages'])): ?>
-	<ul>
+	<div class="success">
 		<? foreach ($_SESSION['success_messages'] as $message): ?>
-			<li><img src="<?=BASEURL?>assets/images/icons/tick.png" alt=""> <?=$message?></li>
+			<img src="<?=BASEURL?>assets/images/icons/tick.png" alt=""> <?=$message?><br />
 		<? endforeach; ?>
-	</ul>
+	</div>
 <? unset($_SESSION['success_messages']); endif; ?>

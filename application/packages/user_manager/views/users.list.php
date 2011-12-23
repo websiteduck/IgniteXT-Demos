@@ -2,10 +2,15 @@
 
 <p>There <?=$user_count==1?'is':'are'?> <?=$user_count?> user<?=$user_count==1?'':'s'?>.</p>
 
-<table>
+<table class="ixt_table">
+	<tr>
+		<th>ID</th>
+		<th>Username</th>
+		<th>&nbsp;</th>
+	</tr>
 	<? foreach ($users as $user): ?>
 		<tr>
-			<td>[<?=$user->id?>]</td>
+			<td style="font-weight: bold;"><?=$user->id?></td>
 			<td><?=$user->username?></td>
 			<td>
 				<a href="<?=BASEURL?>user_manager/users/delete?id=<?=$user->id?>">
