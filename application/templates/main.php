@@ -3,6 +3,7 @@
 	<head>
 		<title><?=$content_title?></title>
 		<link rel="stylesheet" type="text/css" href="<?=BASEURL?>assets/css/ignitext.css" />
+		<link rel="shortcut icon" href="<?=BASEURL?>assets/images/favicon.ico" >
 	</head>
 	<body>
 		<div id="header">
