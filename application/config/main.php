@@ -4,7 +4,7 @@
  * Global Event Logging
  * If this is false, the Event class will ignore all events.
  */
-\System\Event::$log_events = false;
+\System\Event::$log_events = true;
 
 /**
  * Show the event log based on some condition.  For example:
@@ -15,11 +15,11 @@
  *   Show based on variable set in config files: 
  *     if ($debug === true) {
  */
-if (false) \System\Event::$display_log = true;
+if (true) \System\Event::$display_log = true;
 
 /**
  * Database Configuration
  * \System\Database::connect(identifier, driver, server, username, password, database);
  */
-\System\Database::$log_events = false;
+\System\Database::$log_events = true;
 \System\Database::connect_dsn('main', 'sqlite:ixt_demo.sqlite');
