@@ -20,6 +20,6 @@ class stopwatch extends \System\Controller
 		$actions[] = 'Elapsed time: ' . number_format($elapsed, 4) . ' seconds';
 		
 		$data['actions'] = $actions;
-		\System\Display::template('Stopwatch', 'libraries/stopwatch.index', $data);
+		\System\Display::template('libraries/stopwatch', $data);
 	}
 }

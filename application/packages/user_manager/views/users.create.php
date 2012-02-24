@@ -1,4 +1,7 @@
-<? \System\Display::view('user_manager/menu', $data); ?>
+<? 
+$data['tpl']['title'] = 'Create User - User Manager';
+\System\Display::view('user_manager/menu', $data); 
+?>
 <br /><br />
 
 <form action="" method="post">

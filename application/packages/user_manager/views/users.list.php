@@ -1,4 +1,7 @@
-<? \System\Display::view('user_manager/menu', $data); ?>
+<? 
+$data['tpl']['title'] = 'List Users - User Manager';
+\System\Display::view('user_manager/menu', $data); 
+?>
 
 <p>There <?=$user_count==1?'is':'are'?> <?=$user_count?> user<?=$user_count==1?'':'s'?>.</p>
 

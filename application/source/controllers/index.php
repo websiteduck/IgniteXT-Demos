@@ -5,6 +5,6 @@ class index extends \System\Controller
 {
 	function index()
 	{
-		\System\Display::template('IgniteXT Demos', 'index');
+		\System\Display::template('index');
 	}
 }

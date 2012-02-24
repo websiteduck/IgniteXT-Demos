@@ -22,6 +22,6 @@ class form_validation extends \System\Controller
 			if (strpos($_POST['underscore'],'_')===false)
 				$form->set_error('underscore', 'The Underscore field must contain an underscore.');
 		}
-		\System\Display::template('Form Validation', 'libraries/form_validation.index', $data);
+		\System\Display::template('libraries/form_validation', $data);
 	}
 }

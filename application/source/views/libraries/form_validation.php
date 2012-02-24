@@ -1,3 +1,6 @@
+<?php
+$data['tpl']['title'] = 'Form Validation';
+?>
 <style type="text/css">
 	#tbl_form th { text-align: right; }
 	.error { color: #F00; }
