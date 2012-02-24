@@ -12,7 +12,7 @@
 		<div id="header_menu">
 			<ul>
 				<li><a href="<?=BASEURL?>">Home</a></li>
-				<li><a href="http://www.ignitext.com">IgniteXT</a></li>
+				<li><a href="http://www.ignitext.com">IgniteXT Website</a></li>
 				<li><a href="https://github.com/websiteduck/">GitHub</a></li>
 			</ul>
 		</div>
