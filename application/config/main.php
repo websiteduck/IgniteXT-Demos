@@ -4,7 +4,7 @@
  * Global Event Logging
  * If this is false, the Event class will ignore all events.
  */
-\System\Event::$log_events = true;
+\System\Profiler::$log_events = true;
 
 /**
  * Show the event log based on some condition.  For example:
@@ -15,7 +15,7 @@
  *   Show based on variable set in config files: 
  *     if ($debug === true) {
  */
-if (true) \System\Event::$display_log = true;
+if (true) \System\Profiler::$display_log = true;
 
 /**
  * Database Configuration
