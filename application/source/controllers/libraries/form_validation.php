@@ -4,7 +4,7 @@ class form_validation extends \System\Controller
 {
 	function index()
 	{
-		$data['form'] = $form = new \Libraries\IXT_Form_Validation();
+		$data['form'] = $form = new \Libraries\IXT\Form_Validation();
 		
 		if ($_SERVER['REQUEST_METHOD']=='POST')
 		{

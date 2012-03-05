@@ -5,7 +5,7 @@ class stopwatch extends \System\Controller
 	function index()
 	{
 		$actions[] = 'Create IXT_Stopwatch';
-		$stopwatch = new \Libraries\IXT_Stopwatch();
+		$stopwatch = new \Libraries\IXT\Stopwatch();
 		
 		$actions[] = 'Create mark "one"';
 		$stopwatch->mark('one');
