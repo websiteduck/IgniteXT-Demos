@@ -1,6 +1,21 @@
-html, body { padding: 0; margin: 0; }
 
-#header { background-color: #EEE; padding: 5px; }
+@import url(http://fonts.googleapis.com/css?family=Arimo:400,700);
+
+html, body { padding: 0; margin: 0; font:normal 0.9em/150% 'Arimo', "Trebuchet MS", arial, verdana, sans-serif; }
+
+a { color: #5f8626; }
+
+#header { 
+	text-shadow: 0px 1px 1px #fff;
+	background: #eee; /* Old browsers */
+	background: -moz-linear-gradient(top, rgba(252,252,252,1) 0%, rgba(224,224,224,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(224,224,224,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, rgba(252,252,252,1) 0%,rgba(224,224,224,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, rgba(252,252,252,1) 0%,rgba(224,224,224,1) 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(top, rgba(252,252,252,1) 0%,rgba(224,224,224,1) 100%); /* IE10+ */
+	background: linear-gradient(top, rgba(252,252,252,1) 0%,rgba(224,224,224,1) 100%); /* W3C */
+	padding: 5px; 
+}
 #header img { vertical-align: middle; }
 #header_menu { 
 	background: #e2e2e2; /* Old browsers */
@@ -23,10 +38,18 @@ html, body { padding: 0; margin: 0; }
 #content { padding: 20px; }
 #content h1 { color: #333; font-size: 30px; }
 #content h2 { color: #333; }
-#content a { color: #333; }
 
-#footer { padding: 20px; margin-top: 100px; background-color: #DDD; border: 1px solid #AAA; color: #555; }
-#footer a { color: #333; }
+#footer { 
+	text-shadow: 0px 1px 1px #fff;
+	background: #eee; /* Old browsers */
+	background: -moz-linear-gradient(top, rgba(252,252,252,1) 0%, rgba(224,224,224,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(224,224,224,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, rgba(252,252,252,1) 0%,rgba(224,224,224,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, rgba(252,252,252,1) 0%,rgba(224,224,224,1) 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(top, rgba(252,252,252,1) 0%,rgba(224,224,224,1) 100%); /* IE10+ */
+	background: linear-gradient(top, rgba(252,252,252,1) 0%,rgba(224,224,224,1) 100%); /* W3C */
+	padding: 20px; border: 1px solid #AAA; color: #555; 
+}
 
 .icon { vertical-align: text-top; }
 

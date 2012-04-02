@@ -5,7 +5,7 @@
  * If set to true, the Profiler will log everything regardless of what 
  * classes having logging enabled.
  */
-\System\Profiler::log_everything(true);
+\System\Profiler::$log_everything = true;
 
 /**
  * Class-based Event Logging
@@ -25,8 +25,8 @@
  */
 if (true) 
 {
-	\System\Profiler::output_json(true);
-	\System\Profiler::output_html(true);
+	\System\Profiler::$output_json = true;
+	\System\Profiler::$output_html = true;
 }
 
 /**

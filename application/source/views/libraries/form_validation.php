@@ -1,5 +1,9 @@
 <?php
 $data['tpl']['title'] = 'Form Validation';
+$data['tpl']['breadcrumbs'] = array( 
+	array('', 'Libraries'),
+	array('libraries/form_validation', 'Form Validation')
+);
 ?>
 <style type="text/css">
 	#tbl_form th { text-align: right; }
