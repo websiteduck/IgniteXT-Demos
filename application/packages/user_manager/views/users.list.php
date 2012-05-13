@@ -1,16 +1,17 @@
 <? 
-$data['tpl']['title'] = 'List Users - User Manager';
-$data['tpl']['breadcrumbs'] = array( 
-	array('user_manager', 'User Manager'),
-	array('user_manager/users/list', 'List Users')
-);
+$tpl['title'] = 'List Users - User Manager';
 \System\Display::view('user_manager/menu', $data); 
+
+$tpl['breadcrumbs'] = array(
+	array('Demo Apps', ''),
+	array('User Manager', 'user_manager'),
+	array('List Users', '')
+);
 ?>
 
 <p>There <?=$user_count==1?'is':'are'?> <?=$user_count?> user<?=$user_count==1?'':'s'?>.</p>
 
-<div class="col_6">
-<table class="striped tight">
+<table class="table table-bordered table-striped" style="width: 400px;">
 	<thead>
 		<tr>
 			<th>ID</th>
@@ -24,12 +25,11 @@ $data['tpl']['breadcrumbs'] = array(
 			<th style="font-weight: bold;"><?=$user->id?></th>
 			<td><?=$user->username?></td>
 			<td>
-				<a href="<?=BASEURL?>user_manager/users/delete?id=<?=$user->id?>">
-					<img src="<?=ASSETS?>img/icons/cross-button.png" alt="Delete" />
+				<a href="<?php echo BASEURL ?>user_manager/users/delete?id=<?=$user->id?>">
+					<img src="<?php echo ASSETS ?>img/icons/cross-button.png" alt="Delete" />
 				</a>
 			</td>
 		</tr>
 	<? endforeach; ?>
 	</tbody>
 </table>
-</div>

@@ -1,64 +1,54 @@
 <?php
-$data['tpl']['title'] = 'Form Validation';
-$data['tpl']['breadcrumbs'] = array( 
-	array('', 'Libraries'),
-	array('libraries/form_validation', 'Form Validation')
+$tpl['title'] = 'Form Validation';
+$tpl['breadcrumbs'] = array(
+	array('Libraries', ''),
+	array('Form Validation', '')
+);
+
+//array(key, title, default value, instructions)
+$form_fields = array(
+	array('first_name', 'First Name', 'John', ''),
+	array('last_name', 'Last Name', 'Doe', ''),
+	array('email', 'E-mail', 'user@email.com', ''),
+	array('number', 'Number', '0xFF', ''),
+	array('integer', 'Integer', '7', '(Not Required)'),
+	array('decimal', 'Decimal', '11.5', '(10-20)'),
+	array('underscore', 'Underscore', 'a_b', '')
 );
 ?>
-<style type="text/css">
-	#tbl_form th { text-align: right; }
-	.error { color: #F00; }
-	.success { color: #0A0; font-size: 30px; }
-</style>
 
-<? $form->set_delim('<li class="error">','</li>'); ?>
+<?php $form->set_delim('<li class="error">','</li>'); ?>
 
-<? if ($form->checked_invalid()): ?>
-<ul style="border: 1px solid red; margin: 20px;">
-	<?=$form->get_errors()?>
-</ul>
-<? endif; ?>
+<?php if ($form->checked_invalid()): ?>
+<div class="alert alert-error">
+	<ul style="margin-bottom: 0;">
+		<?php echo $form->get_errors() ?>
+	</ul>
+</div>
+<?php endif; ?>
 
-<? $form->set_delim('<span class="error">','</span>'); ?>
+<?php if ($form->checked_valid()): ?>
+	<br />
+	<div class="alert alert-success">
+		<h2>SUCCESS</h2>
+	</div>
+<?php endif; ?>
 
-<form method="post" action="">
-	<table id="tbl_form">
-		<tr>
-			<th>First Name: </th>
-			<td><input type="text" name="first_name" value="<?=$form->form_value('first_name','First')?>" />  <?=$form->get_error('first_name')?></td>
-		</tr>
-		<tr>
-			<th>Last Name: </th>
-			<td><input type="text" name="last_name" value="<?=$form->form_value('last_name','Last')?>" />  <?=$form->get_error('last_name')?></td>
-		</tr>
-		<tr>
-			<th>E-mail: </th>
-			<td><input type="text" name="email" value="<?=$form->form_value('email','user@email.com')?>" />  <?=$form->get_error('email')?></td>
-		</tr>
-		<tr>
-			<th>Number: </th>
-			<td><input type="text" name="number" value="<?=$form->form_value('number','0xFF')?>" />  <?=$form->get_error('number')?></td>
-		</tr>
-		<tr>
-			<th>Integer: </th>
-			<td><input type="text" name="integer" value="<?=$form->form_value('integer','7')?>" />(Not Required)  <?=$form->get_error('integer')?></td>
-		</tr>
-		<tr>
-			<th>Decimal: </th>
-			<td><input type="text" name="decimal" value="<?=$form->form_value('decimal','11.5')?>" />(10-20)  <?=$form->get_error('decimal')?></td>
-		</tr>
-		<tr>
-			<th>Underscore: </th>
-			<td><input type="text" name="underscore" value="<?=$form->form_value('underscore','a_b')?>" />  <?=$form->get_error('underscore')?></td>
-		</tr>
-		<tr>
-			<th>&nbsp;</th>
-			<td><input type="submit" value="Submit" /></td>
-		</tr>
-	</table>
+<?php $form->set_delim('<span class="error">','</span>'); ?>
+
+<form method="post" action="" class="form-horizontal">
+	<?php foreach ($form_fields as $form_input): ?>
+	<?php list($key, $title, $default, $instructions) = $form_input; ?>
+		<div class="control-group <?php if ($form->field_error($key)) echo 'error'; ?>">
+			<label class="control-label"><?php echo $title ?></label>
+			<div class="controls">
+				<input type="text" name="<?php echo $key ?>" value="<?php echo $form->form_value($key, $default) ?>" />
+				<?php echo $instructions ?>
+				<span class="help-inline"><?php echo $form->get_error($key) ?></span>
+			</div>
+		</div>
+	<?php endforeach; ?>
+	<div class="form-actions">
+		<button class="btn btn-primary" type="submit"><i class="icon-ok icon-white"></i> Submit</button>
+	</div>
 </form>
-
-<? if ($form->checked_valid()): ?>
-<br />
-<span class="success">SUCCESS</span>
-<? endif; ?>

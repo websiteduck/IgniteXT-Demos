@@ -1,28 +1,22 @@
 <? 
-$data['tpl']['title'] = 'Create User - User Manager';
-$data['tpl']['breadcrumbs'] = array( 
-	array('user_manager', 'User Manager'),
-	array('user_manager/users/list', 'Create User')
-);
+$tpl['title'] = 'Create User - User Manager';
 \System\Display::view('user_manager/menu', $data); 
-?>
-<br /><br />
 
-<form action="" method="post">
-	<div class="col_6">
-		<table class="striped">
-			<tbody>
-				<tr>
-					<th>Username: </th>
-					<td><input type="text" name="username" /></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>
-						<button type="submit" class="green"><span class="icon white small" data-icon="C"></span> Create</button>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+$tpl['breadcrumbs'] = array(
+	array('Demo Apps', ''),
+	array('User Manager', 'user_manager'),
+	array('Create User', '')
+);
+?>
+
+<form action="" method="post" class="form-horizontal">
+	<div class="control-group">
+		<label class="control-label">Username</label>
+		<div class="controls">
+			<input type="text" name="username" />
+		</div>
+	</div>
+	<div class="form-actions">
+		<button class="btn btn-primary" type="submit"><i class="icon-ok icon-white"></i> Create User</button>
 	</div>
 </form>
