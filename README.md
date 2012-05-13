@@ -4,7 +4,7 @@ Demo Project for the IgniteXT Framework
 ### To use:
 
 1. Copy demo files to a fresh install of IXT Framework.  
-2. In index.php, change "define('BASEURL', '/');" to whatever directory you installed the demos to.  For instance, if the demos are in /var/www/ixtdemos, change the line to "define('BASEURL', '/ixtdemos/');"
+2. In config.json, change "BASEURL": "/" to whatever directory you installed the demos to.  For instance, if the demos are in /var/www/ixtdemos, change the line to "BASEURL": "/ixtdemos/"  
 3. Go to URL, e.g. http://localhost/ixtdemos
 
 ### IgniteXT Demo Project utilizes the following projects:
