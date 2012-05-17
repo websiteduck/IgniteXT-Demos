@@ -1,10 +1,13 @@
 <?php
 namespace Controllers;
-use \System\Database as DB;
-class index extends \System\Controller
+
+use \Services\System\Display;
+use \Services\System\Database as DB;
+
+class index extends \Services\System\Controller
 {
 	function index()
 	{
-		\System\Display::template('index');
+		Display::template('index');
 	}
 }

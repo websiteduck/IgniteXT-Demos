@@ -1,10 +1,13 @@
 <?php
 namespace Controllers\Libraries;
-class form_validation extends \System\Controller
+
+use \Services\System\Display;
+
+class form_validation extends \Services\System\Controller
 {
 	function index()
 	{
-		$data['form'] = $form = new \Libraries\IXT\Form_Validation();
+		$data['form'] = $form = new \Entities\IXT\Form_Validation();
 		
 		if ($_SERVER['REQUEST_METHOD']=='POST')
 		{
@@ -22,6 +25,6 @@ class form_validation extends \System\Controller
 			if (strpos($_POST['underscore'],'_')===false)
 				$form->set_error('underscore', 'The Underscore field must contain an underscore.');
 		}
-		\System\Display::template('libraries/form_validation', $data);
+		Display::template('libraries/form_validation', $data);
 	}
 }

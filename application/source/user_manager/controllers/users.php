@@ -1,7 +1,10 @@
 <?php
 namespace Controllers\User_Manager;
-use \System\Database as DB;
-class users extends \System\Controller
+
+use \Services\System\Display;
+use \Services\System\Database as DB;
+
+class users extends \Services\System\Controller
 {
 	function index()
 	{
@@ -12,7 +15,7 @@ class users extends \System\Controller
 	{
 		$data['user_count'] = DB::field("SELECT count(*) FROM users");
 		$data['users'] = DB::rows("SELECT id, username FROM users LIMIT 500");
-		\System\Display::template('user_manager/users.list', $data);
+		Display::template('user_manager/users.list', $data);
 	}
 	
 	function create()
@@ -23,7 +26,7 @@ class users extends \System\Controller
 			$_SESSION['success_messages'][] = 'User [' . $id . '] ' . $_POST['username'] . ' created.';
 			header('location:'.BASEURL.'user_manager/users/list'); die();
 		}
-		\System\Display::template('user_manager/users.create', $data);
+		Display::template('user_manager/users.create', $data);
 	}
 	
 	function delete()

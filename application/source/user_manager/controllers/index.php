@@ -1,6 +1,7 @@
 <?php
 namespace Controllers\User_Manager;
-class index extends \System\Controller
+
+class index extends \Services\System\Controller
 {
 	function index()
 	{
