@@ -1,5 +1,5 @@
 <?php
-$tpl['title'] = 'IgniteXT Demos';
+$tpl->title = 'IgniteXT Demos';
 ?>
 <h2>Libraries</h2>
 <ul>

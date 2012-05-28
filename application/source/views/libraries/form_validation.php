@@ -1,6 +1,6 @@
 <?php
-$tpl['title'] = 'Form Validation';
-$tpl['breadcrumbs'] = array(
+$tpl->title = 'Form Validation';
+$tpl->breadcrumbs = array(
 	array('Libraries', ''),
 	array('Form Validation', '')
 );

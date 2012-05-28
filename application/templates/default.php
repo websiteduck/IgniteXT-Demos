@@ -1,10 +1,10 @@
 <?php
-if (empty($tpl['breadcrumbs'])) $tpl['breadcrumbs'] = array();
+if (empty($tpl->breadcrumbs)) $tpl->breadcrumbs = array();
 ?>
 <!DOCTYPE html>
 <html>
 	<head>
-		<title><?=$tpl['title']?></title>
+		<title><?=$tpl->title?></title>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<script type="text/javascript" src="<?php echo ASSETS ?>js/bootstrap.min.js"></script>
 		<link rel="stylesheet" type="text/css" href="<?php echo ASSETS ?>css/bootstrap.min.css" media="all" />
@@ -43,7 +43,7 @@ if (empty($tpl['breadcrumbs'])) $tpl['breadcrumbs'] = array();
 				
 		<ul id="breadcrumbs" class="breadcrumb">
 			<li><a href="<?php echo BASEURL ?>">Home</a> <span class="divider">/</span></li>
-			<?php foreach ($tpl['breadcrumbs'] as $breadcrumb): ?>
+			<?php foreach ($tpl->breadcrumbs as $breadcrumb): ?>
 				<?php list($title, $url) = $breadcrumb; ?>
 				<?php if (!empty($url)): ?>
 					<li><a href="<?php echo BASEURL . $url ?>"><?php echo $title ?></a> <span class="divider">/</span></li>
@@ -54,8 +54,8 @@ if (empty($tpl['breadcrumbs'])) $tpl['breadcrumbs'] = array();
 		</ul>
 		
 		<div id="content">
-			<div id="page_title" class="page-header"><h1><?php echo $tpl['title'] ?></h1></div>
-			<?php echo $tpl['content'] ?>
+			<div id="page_title" class="page-header"><h1><?php echo $tpl->title ?></h1></div>
+			<?php echo $tpl->content ?>
 			<br style="clear: both;" />
 		</div>
 		

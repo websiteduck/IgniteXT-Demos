@@ -1,8 +1,8 @@
 <? 
-$tpl['title'] = 'List Users - User Manager';
+$tpl->title = 'List Users - User Manager';
 \Services\System\Display::view('user_manager/menu', $data); 
 
-$tpl['breadcrumbs'] = array(
+$tpl->breadcrumbs = array(
 	array('Demo Apps', ''),
 	array('User Manager', 'user_manager'),
 	array('List Users', '')

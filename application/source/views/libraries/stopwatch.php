@@ -1,7 +1,7 @@
 <?php
-$tpl['title'] = 'Stopwatch';
+$tpl->title = 'Stopwatch';
 
-$tpl['breadcrumbs'] = array(
+$tpl->breadcrumbs = array(
 	array('Libraries', ''),
 	array('Stopwatch', '')
 );
