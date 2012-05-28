@@ -16,8 +16,7 @@
 		
 		// The ASSETS URL contains your publicly accessible files such as javascript,
 		// css, and image files.
-		"ASSETS": "assets/",
-		"ASSETS_PREPEND_BASEURL": true,
+		"ASSETS": "{{production.BASEURL}}assets/",
 		
 		// Locations of directories used by IgniteXT
 		"APPDIR": "application/",
