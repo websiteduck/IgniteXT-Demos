@@ -1,14 +1,12 @@
 <?php
 namespace Controllers\Libraries;
 
-use \Services\System\Display;
-
 class stopwatch extends \Services\System\Controller
 {
 	function index()
 	{
 		$actions[] = 'Create IXT_Stopwatch';
-		$stopwatch = new \Entities\IXT\Stopwatch();
+		$stopwatch = \Get::a('\Entities\IXT\Stopwatch');
 		
 		$actions[] = 'Create mark "one"';
 		$stopwatch->mark('one');
@@ -23,6 +21,6 @@ class stopwatch extends \Services\System\Controller
 		$actions[] = 'Elapsed time: ' . number_format($elapsed, 4) . ' seconds';
 		
 		$data['actions'] = $actions;
-		Display::template('libraries/stopwatch', $data);
+		$this->display->template('libraries/stopwatch', $data);
 	}
 }
