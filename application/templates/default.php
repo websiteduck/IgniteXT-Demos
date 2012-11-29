@@ -60,7 +60,7 @@ if (empty($tpl->breadcrumbs)) $tpl->breadcrumbs = array();
 		</div>
 		
 		<div id="footer">
-			<p style="text-align: center;">&copy; 2011 Website Duck LLC</p>
+			<p style="text-align: center;">&copy; <?=date('Y')?> Website Duck LLC</p>
 			<p style="text-align: center;">
 				<a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a> &nbsp; // &nbsp; 
 				<a href="http://p.yusukekamiyamane.com">Fugue Icons by Yusuke Kamiyamane</a>
