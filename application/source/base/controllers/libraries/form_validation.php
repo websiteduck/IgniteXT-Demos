@@ -5,7 +5,7 @@ class form_validation extends \Services\System\Controller
 {
 	function index()
 	{
-		$data['form'] = $form = \Get::a('\Entities\IXT\Form_Validation');
+		$form_validation = \Get::a('\Entities\IXT\Form_Validation');
 		
 		if ($_SERVER['REQUEST_METHOD']=='POST')
 		{
@@ -17,12 +17,14 @@ class form_validation extends \Services\System\Controller
 				array('integer', 'Integer', 'integer'),
 				array('decimal', 'Decimal', 'required|decimal|range[10,20]')
 			);
-			$form->set_rules($rules_array);
-			$form->validate($_POST);
+			$form_validation->set_rules($rules_array);
+			$form_validation->validate($_POST);
 			
 			if (strpos($_POST['underscore'],'_')===false)
-				$form->set_error('underscore', 'The Underscore field must contain an underscore.');
+				$form_validation->set_error('underscore', 'The Underscore field must contain an underscore.');
 		}
-		$this->display->template('libraries/form_validation', $data);
+		
+		$this->data['form_validation'] = $form_validation;
+		$this->display->template('libraries/form_validation', $this->data);
 	}
 }
