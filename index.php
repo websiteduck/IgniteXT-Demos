@@ -21,7 +21,6 @@
  */
 
 define('BASEDIR', dirname(__FILE__) . '/');
-define('CONFDIR', 'application/config/');
 
 function u(&$v, $default = null) { return isset($v) ? $v : $default; }
 require 'get.php';
