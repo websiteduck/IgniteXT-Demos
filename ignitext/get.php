@@ -15,6 +15,14 @@ class Get
 	public static $soft_redirects = array();
 	public static $hard_redirects = array();
 	
+	private static $config;
+	
+	public static function initialize(&$config) {
+		static::$config = &$config;
+		if (isset($config['hard_redirects'])) static::$hard_redirects = $config['hard_redirects'];
+		if (isset($config['soft_redirects'])) static::$soft_redirects = $config['soft_redirects'];
+	}
+	
 	public static function a($class, $constructor_params = array()) 
 	{ 
 		$class = strtolower($class);
@@ -51,14 +59,14 @@ class Get
 		
 		$parent_callbacks = array();
 		foreach ($classes as $class) {
-			if (isset($GLOBALS['config']['class_callbacks'][$class])) {
-				$parent_callbacks[] = $GLOBALS['config']['class_callbacks'][$class];
+			if (isset(static::$config['class_callbacks'][$class])) {
+				$parent_callbacks[] = static::$config['class_callbacks'][$class];
 			}
 		}
 		foreach ($parent_callbacks as $parent_callback) $parent_callback($obj, true);
 		
-		if (isset($GLOBALS['config']['class_callbacks'][$class_name])) {
-			$callback = $GLOBALS['config']['class_callbacks'][$class_name];
+		if (isset(static::$config['class_callbacks'][$class_name])) {
+			$callback = static::$config['class_callbacks'][$class_name];
 			$callback($obj, false);
 		}
 			

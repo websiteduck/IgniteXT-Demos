@@ -1,16 +1,12 @@
 <?php
 namespace Controllers\User_Manager;
 
-class users extends \Services\System\Controller
+class users extends \IgniteXT\Controller
 {
-	public function __construct() {
-		parent::__construct();
-		$this->db = \Get::the('\Services\System\Database');
-	}
 	
 	function index()
 	{
-		header('location:' . BASEURL . 'user_manager/users/list'); die();
+		header('location:' . BASE_URL . 'user_manager/users/list'); die();
 	}
 	
 	function m_list()
@@ -24,9 +20,9 @@ class users extends \Services\System\Controller
 	{
 		if ($_SERVER['REQUEST_METHOD']=='POST')
 		{
-			$id = $this->db->insert("INSERT INTO users (username) VALUES (?)", $_POST['username']);
+			$id = $this->db->insert_id("INSERT INTO users (username) VALUES (?)", $_POST['username']);
 			$_SESSION['success_messages'][] = 'User [' . $id . '] ' . $_POST['username'] . ' created.';
-			header('location:' . BASEURL . 'user_manager/users/list'); die();
+			header('location:' . BASE_URL . 'user_manager/users/list'); die();
 		}
 		$this->display->template('user_manager/users.create', $data);
 	}
@@ -37,6 +33,6 @@ class users extends \Services\System\Controller
 		$username = $this->db->field("SELECT username FROM users WHERE id = ?", $id);
 		$this->db->query("DELETE FROM users WHERE id = ?", $id);
 		$_SESSION['success_messages'][] = 'User [' . $id . '] ' . $username . ' deleted.';
-		header('location:' . BASEURL . 'user_manager/users/list'); die();
+		header('location:' . BASE_URL . 'user_manager/users/list'); die();
 	}
 }

@@ -1,11 +1,11 @@
 <?php
 namespace Controllers\Libraries;
 
-class form_validation extends \Services\System\Controller
+class form_validation extends \IgniteXT\Controller
 {
 	function index()
 	{
-		$form_validation = \Get::a('\Entities\IXT\Form_Validation');
+		$form_validation = \Get::a('\IgniteXT\Form_Validation');
 		
 		if ($_SERVER['REQUEST_METHOD']=='POST')
 		{

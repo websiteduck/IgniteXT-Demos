@@ -10,7 +10,7 @@
  * @license    MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-namespace Services\System;
+namespace IgniteXT;
 
 function autoload_source($class)
 {
@@ -25,9 +25,9 @@ function autoload_source($class)
 	$filename = array_pop($parts);
 	
 	$check_dirs = array(
-		APPDIR . 'source/', 
-		SHRDIR . 'source/', 
-		IXTDIR . 'source/'
+		APP_DIR . 'source/', 
+		SHR_DIR . 'source/', 
+		IXT_DIR . 'source/'
 	);
 	
 	foreach ($check_dirs as $dir)
@@ -44,11 +44,23 @@ function autoload_source($class)
 			$location .= $filename . '.php';
 			if (file_exists($location)) 
 			{ 
-				include $location; 
+				require $location; 
 				return; 
 			}
 		}
 	}
 }
 
-spl_autoload_register('\Services\System\autoload_source');
+function autoload_ignitext($class)
+{
+	$class = strtolower($class);
+	$parts = explode('\\', $class);
+	
+	$filename = array_pop($parts);
+	
+	$location = implode($parts, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $filename . '.php';
+	if (file_exists($location)) require $location;
+}
+
+spl_autoload_register('\IgniteXT\autoload_source');
+spl_autoload_register('\IgniteXT\autoload_ignitext');

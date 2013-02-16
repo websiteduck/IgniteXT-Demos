@@ -20,43 +20,37 @@
  * @license    MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-define('BASEDIR', dirname(__FILE__) . '/');
+define('BASE_DIR', dirname(__FILE__) . '/');
 
-function u(&$v, $default = null) { return isset($v) ? $v : $default; }
-require 'get.php';
-
-/**
- * Load the application configuration file. 
- */
+//Define APP_DIR, SHR_DIR, IXT_DIR, and select which configuration to use.
 $config_select = require 'config_selector.php';
-$config = require 'config_loader.php';
+
+function find_file($file)
+{
+	$dirs = array(APP_DIR, SHR_DIR, IXT_DIR);
+	foreach ($dirs as $dir) if (file_exists($dir . $file)) return $dir . $file;
+}
+
+//Find and require important files.
+require find_file('helpers.php');
+require find_file('get.php');
+require find_file('autoload.php');
+
+//Load the application configuration file. 
+$config = require find_file('config_loader.php');
 if ($config === false) throw new \Exception('Failed to load configuration file.');
 
-if (isset($config['hard_redirects'])) \Get::$hard_redirects = $config['hard_redirects'];
-if (isset($config['soft_redirects'])) \Get::$soft_redirects = $config['soft_redirects'];
+\Get::initialize($config);
 
-/**
- * Create constants using data from the config file.
- */
-define('APPID', $config['APPID']);
-define('APPDIR', $config['APPDIR']);
-define('SHRDIR', $config['SHRDIR']);
-define('IXTDIR', $config['IXTDIR']);
-define('BASEURL', $config['BASEURL']);
+//Create constants using data from the config file.
+define('APP_ID', $config['APP_ID']);
+define('BASE_URL', $config['BASE_URL']);
 define('ASSETS', $config['ASSETS']);
 
-/**
- * Find and require the autoloader. 
- */
-if (file_exists(APPDIR . 'autoload.php')) require APPDIR . 'autoload.php';
-elseif (file_exists(SHRDIR . 'autoload.php')) require SHRDIR . 'autoload.php';
-elseif (file_exists(IXTDIR . 'autoload.php')) require IXTDIR . 'autoload.php';
-else throw new \Exception('Autoloader not found.');
-
-$profiler = \Get::the('\Services\System\Profiler');
+$profiler = \Get::the('\IgniteXT\Profiler');
 $profiler->start();
 
-$session_class = \Get::the('\Services\System\Session');
+$session_class = \Get::the('\IgniteXT\Session');
 $session_class->start();
 
 /**
@@ -69,7 +63,7 @@ if (!isset($bootstrap) || $bootstrap === false)
 {
 	$profiler->event('normal', 'IgniteXT', 'Start Application', 'Application has started running.');
 
-	$router = \Get::the('\Services\System\Router');
+	$router = \Get::the('\IgniteXT\Router');
 	$router->route(isset($_GET['ixt_route']) ? $_GET['ixt_route'] : '');
 
 	$profiler->event('normal', 'IgniteXT', 'Finish Application', 'Application has finished running.');

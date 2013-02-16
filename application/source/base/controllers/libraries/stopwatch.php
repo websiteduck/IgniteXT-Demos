@@ -1,12 +1,12 @@
 <?php
 namespace Controllers\Libraries;
 
-class stopwatch extends \Services\System\Controller
+class stopwatch extends \IgniteXT\Controller
 {
 	function index()
 	{
 		$actions[] = 'Create IXT_Stopwatch';
-		$stopwatch = \Get::a('\Entities\IXT\Stopwatch');
+		$stopwatch = \Get::a('\IgniteXT\Stopwatch');
 		
 		$actions[] = 'Create mark "one"';
 		$stopwatch->mark('one');

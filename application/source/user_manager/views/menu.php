@@ -1,8 +1,8 @@
 
 <div class="well">
-	<a href="<?php echo BASEURL ?>user_manager/users/list" class="btn btn-primary">
+	<a href="<?php echo BASE_URL ?>user_manager/users/list" class="btn btn-primary">
 		<img src="<?php echo ASSETS ?>img/icons/users.png" alt="" class="icon" /> List Users</a>
-	<a href="<?php echo BASEURL ?>user_manager/users/create" class="btn btn-primary">
+	<a href="<?php echo BASE_URL ?>user_manager/users/create" class="btn btn-primary">
 		<img src="<?php echo ASSETS ?>img/icons/user--plus.png" alt="" class="icon" /> Create User</a>
 </div>
 

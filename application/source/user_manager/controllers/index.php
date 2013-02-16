@@ -1,10 +1,10 @@
 <?php
 namespace Controllers\User_Manager;
 
-class index extends \Services\System\Controller
+class index extends \IgniteXT\Controller
 {
 	function index()
 	{
-		header('location:'.BASEURL.'user_manager/users');
+		header('location:'.BASE_URL.'user_manager/users');
 	}
 }

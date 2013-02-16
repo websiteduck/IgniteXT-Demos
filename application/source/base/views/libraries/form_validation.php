@@ -42,7 +42,7 @@ $form_validation_fields = array(
 		<div class="control-group <?php if ($form_validation->field_error($key)) echo 'error'; ?>">
 			<label class="control-label"><?php echo $title ?></label>
 			<div class="controls">
-				<input type="text" name="<?php echo $key ?>" value="<?php echo $this->input->form_value($key, $default) ?>" />
+				<input type="text" name="<?php echo $key ?>" value="<?php echo $form_validation->form_value($key, $default) ?>" />
 				<?php echo $instructions ?>
 				<span class="help-inline"><?php echo $form_validation->get_error($key) ?></span>
 			</div>

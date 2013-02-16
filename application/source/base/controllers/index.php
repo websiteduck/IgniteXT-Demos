@@ -1,7 +1,7 @@
 <?php
 namespace Controllers;
 
-class index extends \Services\System\Controller
+class index extends \IgniteXT\Controller
 {
 	function index()
 	{

@@ -27,11 +27,11 @@ if (empty($tpl->breadcrumbs)) $tpl->breadcrumbs = array();
 							</a>
 							<ul class="dropdown-menu">
 								<li><h3>&nbsp; Libraries</h3></li>
-								<li><a href="<?php echo BASEURL ?>libraries/form_validation">IXT_Form_Validation</a></li>
-								<li><a href="<?php echo BASEURL ?>libraries/stopwatch">IXT_Stopwatch</a></li>
+								<li><a href="<?php echo BASE_URL ?>libraries/form_validation">IXT_Form_Validation</a></li>
+								<li><a href="<?php echo BASE_URL ?>libraries/stopwatch">IXT_Stopwatch</a></li>
 								<li class="divider"></li>
 								<li><h3>&nbsp; Demo Apps</h3></li>
-								<li><a href="<?php echo BASEURL ?>user_manager/">User Manager</a></li>
+								<li><a href="<?php echo BASE_URL ?>user_manager/">User Manager</a></li>
 							</ul>
 						</div>
 					</li>
@@ -42,11 +42,11 @@ if (empty($tpl->breadcrumbs)) $tpl->breadcrumbs = array();
 		</div>
 				
 		<ul id="breadcrumbs" class="breadcrumb">
-			<li><a href="<?php echo BASEURL ?>">Home</a> <span class="divider">/</span></li>
+			<li><a href="<?php echo BASE_URL ?>">Home</a> <span class="divider">/</span></li>
 			<?php foreach ($tpl->breadcrumbs as $breadcrumb): ?>
 				<?php list($title, $url) = $breadcrumb; ?>
 				<?php if (!empty($url)): ?>
-					<li><a href="<?php echo BASEURL . $url ?>"><?php echo $title ?></a> <span class="divider">/</span></li>
+					<li><a href="<?php echo BASE_URL . $url ?>"><?php echo $title ?></a> <span class="divider">/</span></li>
 				<?php else: ?>
 					<li><?php echo $title ?> <span class="divider">/</span></li>
 				<?php endif; ?>

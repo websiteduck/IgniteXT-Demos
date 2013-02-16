@@ -1,6 +1,6 @@
 <? 
 $tpl->title = 'List Users - User Manager';
-\Services\System\Display::view('user_manager/menu', $data); 
+$this->view('user_manager/menu', $data); 
 
 $tpl->breadcrumbs = array(
 	array('Demo Apps', ''),
@@ -25,7 +25,7 @@ $tpl->breadcrumbs = array(
 			<th style="font-weight: bold;"><?=$user->id?></th>
 			<td><?=$user->username?></td>
 			<td>
-				<a href="<?php echo BASEURL ?>user_manager/users/delete?id=<?=$user->id?>">
+				<a href="<?php echo BASE_URL ?>user_manager/users/delete?id=<?=$user->id?>">
 					<img src="<?php echo ASSETS ?>img/icons/cross-button.png" alt="Delete" />
 				</a>
 			</td>
