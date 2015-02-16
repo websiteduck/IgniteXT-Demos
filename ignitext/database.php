@@ -5,7 +5,7 @@
  * Manages connections, runs queries, returns results.
  * This class serves as a wrapper for PDO.
  *
- * @copyright  Copyright 2011-2012, Website Duck LLC (http://www.websiteduck.com)
+ * @copyright  Copyright 2011-2015, Website Duck LLC (http://www.websiteduck.com)
  * @link       http://www.ignitext.com IgniteXT PHP Framework
  * @license    MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
@@ -28,9 +28,12 @@ class Database extends Service
 	 * @param string $password
 	 * @param string $database 
 	 */
-	public function connect($driver, $server, $username, $password, $database)
+	public function connect($driver, $host, $port = 3306, $username, $password, $database = null, $charset = 'utf8')
 	{
-		$this->PDO_connection = new \PDO($driver . ':host=' . $server . ';dbname=' . $database, $username, $password);
+		$connect_string = $driver . ':host=' . $host . ';port=' . $port;
+		if (!empty($database)) $connect_string .= ';dbname=' . $database;
+		$connect_string .= ';charset=' . $charset;
+		$this->PDO_connection = new \PDO($connect_string, $username, $password);
 		$this->PDO_connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 	}
 	
@@ -191,12 +194,13 @@ class Database extends Service
 	 * @param string $value1 (optional, values to be escaped, then replaces ? in query, can be array or list)
 	 * @return string $field
 	 */
-	public function field()
+	public function value()
 	{
 		$arguments = func_get_args();
 		$sth = call_user_func_array(array($this, 'query'), $arguments);
 		return $sth->fetchColumn();
 	}
+	public function field() { $arguments = func_get_args(); return call_user_func_array(array($this, 'value'), $arguments); } //Backwards Compatibility
 
 	/**
 	 * Execute a query and return an array of all fields in the first column of results
@@ -205,12 +209,13 @@ class Database extends Service
 	 * @param string $value1 (optional, values to be escaped, then replaces ? in query, can be array or list)
 	 * @return array $fields
 	 */
-	public function fields_col()
+	public function values_col()
 	{
 		$arguments = func_get_args();
 		$sth = call_user_func_array(array($this, 'query'), $arguments);
 		return $sth->fetchAll(\PDO::FETCH_COLUMN);
 	}
+	public function fields_col() { $arguments = func_get_args(); return call_user_func_array(array($this, 'values_col'), $arguments); } //Backwards Compatibility
 	
 	/**
 	 * Execute a query and return an array of all fields in the first row of results
@@ -219,12 +224,13 @@ class Database extends Service
 	 * @param string $value1 (optional, values to be escaped, then replaces ? in query, can be array or list)
 	 * @return array $fields
 	*/
-	public function fields_row()
+	public function values_row()
 	{
 		$arguments = func_get_args();
 		$sth = call_user_func_array(array($this, 'query'), $arguments);
 		return $sth->fetch(\PDO::FETCH_NUM);
 	}
+	public function fields_row() { $arguments = func_get_args(); return call_user_func_array(array($this, 'values_row'), $arguments); } //Backwards Compatibility
 	
 	/**
 	 * Execute a query and return the insert id.  If no parameters are passed,

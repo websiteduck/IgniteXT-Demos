@@ -5,7 +5,7 @@
  * Validates user input. Can also set form values when validation fails and
  * display error messages with custom delimiters.
  *
- * @copyright  Copyright 2011-2012, Website Duck LLC (http://www.websiteduck.com)
+ * @copyright  Copyright 2011-2015, Website Duck LLC (http://www.websiteduck.com)
  * @link       http://www.ignitext.com IgniteXT PHP Framework
  * @license    MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
@@ -20,9 +20,10 @@ class Form_Validation extends Entity
 	private $checked = false;
 	private $valid = false;
 	private $rule_class;
-	
 	private $pre_delim;
 	private $post_delim;
+
+	private $session;
 	
 	public function valid() { return $this->valid; }
 	public function checked() { return $this->checked; }
@@ -32,6 +33,7 @@ class Form_Validation extends Entity
 
 	public function clear_rules() { $this->rules = array(); }
 	public function get_rules() { return $this->rules; }
+	public function get_error_array() { return $this->errors; }
 
 	public function set_error($key, $message) { $this->errors[$key] = $message; $this->valid = false; }
 	public function clear_errors() { $this->errors = array(); }
@@ -40,7 +42,12 @@ class Form_Validation extends Entity
 
 	public function __construct($rule_class = null)
 	{
-		if ($rule_class == null) $this->rule_class = \Get::the('\IgniteXT\Validation');
+		$language = \Get::the('IgniteXT.Language');
+		$language->load('validation');
+
+		$this->session = \Get::the('IgniteXT.Session');
+
+		if ($rule_class == null) $this->rule_class = \Get::the('IgniteXT.Validation');
 		else $this->rule_class = $rule_class;
 	}
 	
@@ -74,7 +81,7 @@ class Form_Validation extends Entity
 	}
 	
 	/**
-	 * Uses the rules that were previously set to run validation on a given array.
+	 * Uses the rules to run validation on a given array.
 	 * 
 	 * @param array $array The array to validate. This will usually be $_GET or $_POST
 	 * @return boolean $valid
@@ -98,16 +105,37 @@ class Form_Validation extends Entity
 			{
 				if ($rule != 'required' && $value == '') continue;
 				list($rule, $parameters) = $this->rule_parts($rule);
-				array_unshift($parameters, $value);
-				array_push($parameters, true);
-				$output = call_user_func_array(array($this->rule_class, $rule), $parameters);
-				if ($output !== true) $this->errors[$key] = 'The ' . $label . ' field ' . $output;
+				$rule_params = $this->resolve_fields($parameters);
+				array_unshift($rule_params, $value);
+				$output = call_user_func_array(array($this->rule_class, $rule), $rule_params);
+				if ($output !== true) $this->errors[$key] = $this->determine_failure_output($rule, $label, $parameters);
 			}
 		}
 
 		if (count($this->errors) > 0) $this->valid = false;
 		$this->checked = true;
 		return $this->valid;
+	}
+	
+	private function determine_failure_output($rule, $label, $parameters) 
+	{
+		foreach ($parameters as &$parameter) {
+			$match = preg_match('%^{{(.+)}}$%', $parameter, $matches);
+			if ($match === 1) $parameter = \__('validation.the_compare_field', $this->rules[$matches[1]]['label']);
+		}
+		unset($parameter);
+		array_unshift($parameters, \__('validation.the_field', $label));
+		return \__('validation.' . $rule, $parameters);
+	}
+	
+	private function resolve_fields($parameters)
+	{
+		if (empty($parameters)) return $parameters;
+		foreach ($parameters as &$parameter) {
+			$match = preg_match('%^{{(.+)}}$%', $parameter, $matches);
+			if ($match === 1) $parameter = \array_get($this->array, $matches[1]);
+		}
+		return $parameters;		
 	}
 	
 	private function rule_parts($rule)
@@ -207,17 +235,57 @@ class Form_Validation extends Entity
 	
 	/**
 	 * Returns the text need to select a checkbox or radio if the specified key/value pair is selected.
+         * 
+         * Checkbox elements should have a hidden input before them that sets their false value to 0 like so:
+         * <input type="hidden" name="name" value="0" />
+         * <input type="checkbox" name="name" < ?=$form->form_checkbox('name', true)? > />
+         * Otherwise the default value will be set whenever the checkbox is unchecked.
 	 * 
 	 * @param string $key
 	 * @param boolean $default
 	 * @return string $checkbox_text
 	 */
-	public function form_checkbox($key, $default = false, $which_array = 'request')
+	public function form_checkbox($key, $default = false)
 	{
 		$value = \array_get($this->array, $key);
 		if ($value === null && $default == true) return 'checked="checked"';
-		if ($value !== null) return 'checked="checked"';
+		if (!empty($value)) return 'checked="checked"';
 		else return '';
+	}
+	
+	public function form_multiselect($key, $check_value, $default = false) 
+	{
+		$arr = \array_get($this->array, $key);
+		if ($arr === null && $default == true) return 'selected="selected"';
+		if (is_array($arr) && in_array($check_value, $arr)) return 'selected="selected"';
+		else return '';
+	}
+
+	public function save()
+	{
+		$this->session->set_flash('ixt_form_validation', $this->object_array_data());
+	}
+	
+	public function load()
+	{
+		$properties = $this->session->get_flash('ixt_form_validation');
+
+		if (!empty($properties)) {
+			foreach ($properties as $key => $val) $this->$key = $val;
+		}
+	}
+	
+	public function object_array_data()
+	{
+		return array(
+			'array' => $this->array,
+			'rules' => $this->rules,
+			'errors' => $this->errors,
+			'checked' => $this->checked,
+			'valid' => $this->valid,
+			'pre_delim' => $this->pre_delim,
+			'post_delim' => $this->post_delim,
+		);
 	}
 	
 }

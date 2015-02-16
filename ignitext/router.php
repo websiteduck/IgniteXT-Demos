@@ -5,7 +5,7 @@
  * Determines which controller to load and method to call based on the URL 
  * entered.
  *
- * @copyright  Copyright 2011-2012, Website Duck LLC (http://www.websiteduck.com)
+ * @copyright  Copyright 2011-2015, Website Duck LLC (http://www.websiteduck.com)
  * @link       http://www.ignitext.com IgniteXT PHP Framework
  * @license    MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
@@ -14,54 +14,94 @@ namespace IgniteXT;
 
 class Router extends Service
 {
-
+	public $routes;
+	public $_404;
+	
+	public $route;
 	public $requested_url;
-	public $action;
-	public $custom_routes = array();
-	public $_404 = '\Controllers\_404::index';
 	
 	/**
 	 * Parses the URL to determine which controller and method should be used
 	 * to display the page, then calls that method.
 	 */
-	public function route($route = '')
+	public function route($requested_url = '')
 	{
-		$route_clean = !empty($route) ? trim($route, '/') : '';
-		$route_clean = str_replace('-', '_', $route_clean);
-		if (substr($route_clean, 0, 2) == '_/') $route_clean = '/' . $route_clean;
-		
-		$request_arr = explode('/_/', $route_clean);
-		$requested_url = $request_arr[0];
-		if (isset($request_arr[1])) {
-			$params = $request_arr[1];
-			$params = explode('/', $params);	
+		if (empty($requested_url)) $requested_url = '';
+		$requested_url = trim($requested_url, '/');
+		$this->requested_url = $requested_url;
+
+		$route = false;
+		foreach ($this->routes as $regex_route) {
+			$matches = array();
+			if ($regex_route[0] === 'restful') {
+				if (!isset($regex_route[3])) $regex_route[3] = true; //Enable Params
+				list($type, $url, $controller, $enable_params) = $regex_route;
+				$method = 'any';
+			}
+			elseif ($regex_route[0] === 'direct') {
+				if (!isset($regex_route[4])) $regex_route[4] = true; //Enable Params
+				if (!isset($regex_route[5])) $regex_route[5] = 'any'; //Request Method
+				list($type, $url, $controller, $action, $enable_params, $method) = $regex_route;
+			}
+			else throw new \Exception('Invalid Route Type: ' . $regex_route[0]);
+
+			$url = str_replace('@', '\\@', $url);
+			$url = rtrim($url, '/');
+
+			if ($type === 'restful') {
+				$regex = '@^' . $url . '(?:/(?P<ixt_action>[^/]+))?';
+			}
+			elseif ($type === 'direct') {
+				$regex = '@^' . $url;
+			}
+
+			if ($enable_params) $regex .= '(?P<ixt_params>.+)?';
+			$regex .= '$@';
+			
+			$matched = preg_match($regex, $this->requested_url, $matches);
+			
+			if ($method !== 'any') if (strtolower($_SERVER['REQUEST_METHOD']) !== $method) $matched = 0;
+
+			if ($matched === 1) {
+				if ($type === 'restful') {
+					if (isset($matches['ixt_action'])) $action = $matches['ixt_action'];
+					else $action = 'index';
+					
+					$action = str_replace(array('-', ' '), '_', $action);
+					$action = strtolower($_SERVER['REQUEST_METHOD']) . '_' . $action;
+				}
+				
+				$params = array();
+				if (isset($matches['ixt_params'])) $params = explode('/', trim($matches['ixt_params'], '/'));
+				foreach ($matches as $key => $value) if (!is_int($key)) $_GET[$key] = $value;
+
+				$route = new \stdClass;
+				$route->controller = $controller;
+				$route->action = $action;
+				$route->params = $params;
+				break;
+			}
+			
 		}
-		else $params = array();
 		
-		$action = false;
-		if ($action === false) $action = $this->custom_routes($requested_url);
-		if ($action === false) $action = $this->automatic_routes($requested_url);
-		if ($action === false) $action = $this->custom_routes($requested_url, true);		
-		
-		if (is_callable($action) === false) 
+		//If the route was not found or the controller and action don't exist, use the 404 controller
+		if ($route === false || is_callable(\Get::dot_to_slash('Controllers.' . $route->controller . '::' . $route->action)) === false) 
 		{
-			$action = $this->_404;
+			$route = $this->_404;
 		}
 
-		//The 404 controller doesn't exist, fail gracefully.
-		if (is_callable($action) === false) 
+		//If the 404 controller doesn't exist, fail gracefully.
+		if (is_callable(\Get::dot_to_slash('Controllers.' . $route->controller . '::' . $route->action)) === false) 
 		{
 			return $this->die_404();
 		}
 
-		$this->action = $action;
-		$this->requested_url = $requested_url;
-		
-		list($class, $method) = explode('::', $action, 2);
+		if (!isset($route->params)) $route->params = array();
+		$this->route = $route;
 
-		$controller = \Get::the($class);
+		$controller = \Get::the('Controllers.' . $route->controller);
 		if (is_callable(array($controller, 'pre_route'))) call_user_func(array($controller, 'pre_route'));
-		call_user_func_array(array($controller, $method), $params);
+		call_user_func_array(array($controller, $route->action), $route->params);
 		if (is_callable(array($controller, 'post_route'))) call_user_func(array($controller, 'post_route'));
 	}
 	
@@ -72,86 +112,18 @@ class Router extends Service
 		die();
 	}
 	
-	protected function automatic_routes($requested_url)
-	{		
-		if ($requested_url == '') $url_parts = array();
-		else $url_parts = explode('/', $requested_url);
-		
-		$dirs = array(APP_DIR, SHR_DIR);
-		
-		foreach ($dirs as $dir)
-		{		
-			$url_parts_copy = $url_parts;
-			$namespace = '\\Controllers\\';	
-			
-			if (count($url_parts_copy) == 0 && is_callable($namespace . 'index::index')) return $namespace . 'index::index';
-			
-			//\Controllers\MyDir\MyController\Index::index()
-			$try_action = 'index';
-			$try_controller = $namespace . implode('\\', $url_parts_copy) . '\index';
-			if (is_callable($try_controller . '::' . $try_action)) return $try_controller . '::' . $try_action;
-			
-			//\Controllers\MyDir\MyController::index()
-			$try_action = 'index';
-			$try_controller = $namespace . implode('\\', $url_parts_copy);
-			if (is_callable($try_controller . '::' . $try_action)) return $try_controller . '::' . $try_action;
-			
-			//\Controllers\MyDir::MyController()
-			$try_action = array_pop($url_parts_copy);
-			$try_controller = $namespace . implode('\\', $url_parts_copy);
-			if (is_callable($try_controller . '::' . $try_action)) return $try_controller . '::' . $try_action;
-			
-			//If the method doesn't exist, try prefixing it with "m_".  This is useful
-			//if you want to have an action named "list" but PHP won't allow you to have
-			//a method named "list".
-			//\Controllers\MyDir::m_MyController()
-			$try_action = 'm_' . $try_action;
-			if (is_callable($try_controller . '::' . $try_action)) return $try_controller . '::' . $try_action;
-		}
-		
-		return false;
-	}
-	
-	protected function custom_routes($requested_url, $after_auto = false)
+	public function redirect($location, $include_base_url = true)
 	{
-		foreach ($this->custom_routes as $route)
-		{
-			if ($route['after_auto'] == $after_auto)
-			{
-				$found_match = preg_match($route['regex'], $requested_url, $matches);
-				if ($found_match === 1)
-				{
-					//Get rid of the matched string
-					array_shift($matches);
-					$i = 0;
-					foreach ($matches as $key => $value)
-					{
-						if ($i % 2 == 0 && !isset($_GET[$key])) $_GET[$key] = $value;
-						$i++;
-					}
-					return $route['action'];
-				}
-				else if ($found_match === false) throw new Exception('Manual route preg_match failed: ' . $route['regex']);
-			}
-		}
-		return false;
-	}
-	
-	public function simple_route($route, $action, $after_auto = false) 
-	{
-		//TODO: Simple Routes
-		$this->custom_routes[] = array('regex' => $route, 'action' => $action, 'after_auto' => $after_auto);
-	}
-	
-	public function regex_route($route, $action, $after_auto = false) 
-	{
-		$this->custom_routes[] = array('regex' => $route, 'action' => $action, 'after_auto' => $after_auto);
-	}
-	
-	public function redirect($location)
-	{
-		header('Location:' . BASE_URL . $location);
+		session_write_close();
+		if ($include_base_url) header('Location:' . BASE_URL . $location);
+		else header('Location:' . $location);
 		die();
 	}
 	
+	public function redirect_301($location, $include_base_url = true)
+	{
+		session_write_close();
+		header('HTTP/1.1 301 Moved Permanently'); 
+		$this->redirect($location, $include_base_url);
+	}
 }

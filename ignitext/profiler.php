@@ -5,7 +5,7 @@
  * Keeps track of things that happen during execution and how long those things
  * took.  Used for debugging and logging purposes.
  *
- * @copyright  Copyright 2011-2012, Website Duck LLC (http://www.websiteduck.com)
+ * @copyright  Copyright 2011-2015, Website Duck LLC (http://www.websiteduck.com)
  * @link       http://www.ignitext.com IgniteXT PHP Framework
  * @license    MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
@@ -18,6 +18,7 @@ class Profiler extends Service
 	public $log_everything = false;
 	public $output_json = false;
 	public $output_html = false;
+	public $require_template = false;
 	
 	protected $classes_logging = array();
 	protected $start_time = 0;
@@ -37,6 +38,11 @@ class Profiler extends Service
 	
 	public function finish()
 	{
+		if ($this->require_template) {
+			$display = \Get::the('IgniteXT.Display');
+			if (!$display->template_loaded) return;
+		}
+		
 		if ($this->output_html) $this->output_json = true;
 		
 		if ($this->output_json) $this->render_json();
@@ -65,7 +71,6 @@ class Profiler extends Service
 		$html_safe_log = $this->log;
 		array_walk_recursive($html_safe_log, function(&$item, $key) { $item = htmlentities($item, ENT_QUOTES); });
 		$json_log = json_encode($html_safe_log);
-		//$escaped_json_log = str_replace("'", "\'", $json_log);
 		?>
 			<script type="text/javascript">
 				var profiler_log = <?=$json_log?>;
@@ -77,7 +82,9 @@ class Profiler extends Service
 	{
 		?>
 		<style type="text/css">
-			#ixt_events { border-collapse: collapse; }
+			#ixt_profiler { position: fixed; left: 0; bottom: 0; width: 100%; height: 300px; overflow-y: auto; background-color: #EEE; color: #444; border-top: 1px dashed #444; resize: vertical; }
+			#ixt_profiler h1 { font-size: 16px; }
+			#ixt_events { border-collapse: collapse; width: 100%; }
 			#ixt_events td, #ixt_events th { padding: 5px; }
 			#ixt_events th { border: 1px solid #DDD; background-color: #EEE; color: #444; }
 			#ixt_events td { border: 1px solid #EEE; background-color: #FFF; color: #333; }
@@ -94,7 +101,6 @@ class Profiler extends Service
 			}
 		</script>
 		<script type="text/javascript">
-			jQuery.noConflict();
 			jQuery(function($) {
 				$.each(profiler_log, function(index, value) {
 					$('#ixt_events tbody').append(
@@ -106,28 +112,27 @@ class Profiler extends Service
 							'<td>' + value.description + '</td>' +
 						'</tr>'
 					);
-					//alert(value.time + ' ' + value.type + ' ' + value.from + ' ' + value.action + ' ' + value.description);
 				});					
 			});
 		</script>
 		
 		<div id="ixt_profiler">
 			<h1>IgniteXT Profiler</h1>
-		</div>
 
-		<table id="ixt_events">
-			<thead>
-				<tr>
-					<th>&nbsp;</th>
-					<th>Time</th>
-					<th>From</th>
-					<th>Action</th>
-					<th>Description</th>
-				</tr>
-			</thead>
-			<tbody>
-			</tbody>
-		</table>
-		<?
+			<table id="ixt_events">
+				<thead>
+					<tr>
+						<th>&nbsp;</th>
+						<th>Time</th>
+						<th>From</th>
+						<th>Action</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+		<?php
 	}
 }

@@ -4,7 +4,7 @@
  * 
  * Shows views and templates.
  *
- * @copyright  Copyright 2011-2012, Website Duck LLC (http://www.websiteduck.com)
+ * @copyright  Copyright 2011-2015, Website Duck LLC (http://www.websiteduck.com)
  * @link       http://www.ignitext.com IgniteXT PHP Framework
  * @license    MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
@@ -13,52 +13,32 @@ namespace IgniteXT;
 
 class Display extends Service
 {
-	public function __construct()
-	{
-		$this->input = \Get::the('\IgniteXT\Input');
+	public $default_template = 'default';
+	public $template_loaded = false;
+	public $data = array();
+
+	public function created() 
+	{		
+		if (!isset($this->sess) && isset($this->session)) $this->sess = &$this->session->reference();
+		if (!isset($this->conf) && isset($this->config)) $this->conf = &$this->config->reference();
 	}
 	
-	public function view($view, &$data = array())
-	{
-		$requested_view = $view;
+	public function view($view, $ixt_data = null)
+	{		
+		$ixt_location = $this->find_file($view, 'v');
+		unset($view);
 		
-		$parts = explode('/', $view);
-		$filename = array_pop($parts);
-		
-		$check_dirs = array(APP_DIR, SHR_DIR);
-		foreach ($check_dirs as $dir)
-		{
-			$dir .= 'source/';
-			if (count($parts) == 0 || !is_dir($dir . $parts[0])) $dir .= 'base/';
-			for ($i = 0; $i <= count($parts); $i++)
-			{
-				$location = $dir;
-				if ($i > 0) $location .= implode(array_slice($parts, 0, $i),'/') . '/';
-				if ($i > 0 && !is_dir($location)) continue 2; //If this isn't a directory, none of the others will be either
-				$location .= 'views' . '/';
-				if ($i < count($parts)) $location .= implode(array_slice($parts, -(count($parts)-$i)),'/') . '/';
-				$location .= $filename . '.php';
-				if (file_exists($location)) break 2;
-			}
-		}
-		$ixt = array();
-		$ixt['location'] = $location;
-				
-		if (!file_exists($location))
-		{
-			throw new \Exception('View Not Found: ' . $requested_view);
-		}
-		
-		unset($view, $requested_view, $parts, $check_dirs, $dir, $location, $filename, $i);
-		
-		if (is_array($data)) extract($data, EXTR_SKIP);
+		if (is_array($ixt_data)) extract($ixt_data, EXTR_SKIP);
+		else extract($this->data, EXTR_SKIP);
+		unset($ixt_data);
+
 		if (!isset($tpl)) $tpl = new \stdClass;
-		require($ixt['location']); 
-		$data['tpl'] = $tpl;
+		require($ixt_location); 
+		$this->data['tpl'] = $tpl;
 		return true; 
 	}
 
-	public function return_view($view, &$data = array())
+	public function return_view($view, $data = null)
 	{
 		ob_start();
 		$this->view($view, $data);
@@ -67,38 +47,87 @@ class Display extends Service
 		return $output;
 	}
 	
-	public function template_view($view, &$data = array())
-	{
-		$requested_view = $view;
+	public function template_view($view, $ixt_data = null)
+	{		
+		$ixt_location = $this->find_file($view, 't');
+		unset($view);
 		
-		$path = APP_DIR . 'templates/' . $view . '.php';
-		if (!file_exists($path)) {
-			throw new \Exception('Template View Not Found: ' . $requested_view);
-		}
-		
-		$ixt = array();
-		$ixt['path'] = $path;
-		
-		unset($view, $requested_view, $path);
-		
-		if (is_array($data)) extract($data, EXTR_SKIP);
+		if (is_array($ixt_data)) extract($ixt_data, EXTR_SKIP);
+		else extract($this->data, EXTR_SKIP);
+		unset($ixt_data);
+
 		if (!isset($tpl)) $tpl = new \stdClass;
-		require($ixt['path']); 
-		$data['tpl'] = $tpl;
+		require($ixt_location); 
+		$this->data['tpl'] = $tpl;
 		return true; 
 	}
 
-	public function template($files, &$data = array(), $template = 'default')
+	public function template($files, $data = null, $template = null)
 	{
-		if (!isset($data['tpl'])) $data['tpl'] = new \stdClass;
-		$data['tpl']->template = $template;
+		if ($template === null) $template = $this->default_template;
+		
+		$this->template_loaded = true;
+		if (!isset($this->data['tpl'])) $this->data['tpl'] = new \stdClass;
+		$this->data['tpl']->template = $template;
 		
 		$content = '';
 		if (!is_array($files)) $files = array($files);
 		foreach ($files as $file) $content .= $this->return_view($file, $data);
-		$data['tpl']->content = $content;
+		$this->data['tpl']->content = $content;
 		
 		$this->template_view($template, $data);
+	}
+
+	public function template_wrap_html($html, $data = null, $template = null)
+	{
+		if ($template === null) $template = $this->default_template;
+		
+		$this->template_loaded = true;
+		if (!isset($this->data['tpl'])) $this->data['tpl'] = new \stdClass;
+		$this->data['tpl']->template = $template;
+		$this->data['tpl']->content = $html;
+		
+		$this->template_view($template, $data);	
+	}
+
+	protected function find_file($view, $type = 'v')
+	{
+		$check_dirs = array(
+			APP_DIR . 'source/', 
+			SHR_DIR . 'source/',
+		);
+
+		if ($type === 'v') {
+			$type_text = 'View';
+			$folder_name = 'views';
+		}
+		elseif ($type === 't') {
+			$type_text = 'Template';
+			$folder_name = 'templates';
+		}
+		else {
+			throw new \Exception('Invalid view type: ' . $type);
+		}
+
+		$parts = explode('/', $view);
+		$filename = array_pop($parts);
+		
+		foreach ($check_dirs as $dir)
+		{
+			if (count($parts) == 0 || !is_dir($dir . $parts[0])) $base = 'base';
+			else $base = array_shift($parts);
+
+			$location = $dir . $base . '/' . $folder_name . '/' . implode($parts, '/') . '/' . $filename . '.' . $type . '.php';
+			if (file_exists($location)) break;
+		}
+				
+		if (!file_exists($location))
+		{
+			ob_end_clean();
+			throw new \Exception($type_text . ' Not Found: ' . $view);
+		}
+
+		return $location;
 	}
 	
 }

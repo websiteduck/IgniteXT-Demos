@@ -4,7 +4,7 @@
  * 
  * The base class for a controller.
  *
- * @copyright  Copyright 2011-2012, Website Duck LLC (http://www.websiteduck.com)
+ * @copyright  Copyright 2011-2015, Website Duck LLC (http://www.websiteduck.com)
  * @link       http://www.ignitext.com IgniteXT PHP Framework
  * @license    MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
@@ -13,14 +13,11 @@ namespace IgniteXT;
 
 abstract class Controller extends Service
 {
-	public function __construct() 
-	{
-		$this->db = \Get::the('\IgniteXT\Database');
-		$this->display = \Get::the('\IgniteXT\Display');
-		$this->router = \Get::the('\IgniteXT\Router');
-		$this->session_class = \Get::the('\IgniteXT\Session');
-		$this->session = &$this->session_class->reference();
-		$this->input = \Get::the('\IgniteXT\Input');
+	public function created() 
+	{		
+		if (!isset($this->sess) && isset($this->session)) $this->sess = &$this->session->reference();
+		if (!isset($this->conf) && isset($this->config)) $this->conf = &$this->config->reference();
+		if (!isset($this->data) && isset($this->display)) $this->data = &$this->display->data;
 	}
 	
 	public function post_handler($action) { return $this->handler("POST", $action); }
